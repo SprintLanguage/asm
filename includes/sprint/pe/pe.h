@@ -4,4 +4,4 @@
 
 #include <stdio.h>
 
-void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t buff);
+void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t* buff);

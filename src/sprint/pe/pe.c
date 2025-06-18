@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t buff) {
+void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t* buff) {
     PE_DOS_HEADER dos_header = {0};
     dos_header.e_magic = 0x5A4D;  // "MZ"
     dos_header.e_lfanew = sizeof(PE_DOS_HEADER);
@@ -48,7 +48,7 @@ void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t buff) {
     memcpy(section_header.Name, ".text", 5);
     section_header.Misc.VirtualSize = 0x1000;
     section_header.VirtualAddress = 0x1000;
-    section_header.SizeOfRawData = buff.sz;
+    section_header.SizeOfRawData = buff->sz;
     section_header.PointerToRawData = 0x200;
     section_header.Characteristics = 0x60000020;  // Code | Execute | Read
 
@@ -58,7 +58,7 @@ void sprint_writepeexecutable(FILE* file, sprint_bytebuff_t buff) {
     uint8_t padding[256] = {0};
     fwrite(padding, 1, 0x200 - (sizeof(PE_DOS_HEADER) + sizeof(PE_NT_HEADERS) + sizeof(PE_OPTIONAL_HEADER) + sizeof(PE_SECTION_HEADER)), file);
 
-    fwrite(buff.buff, 1, buff.sz, file);
+    fwrite(buff->buff, 1, buff->sz, file);
 
     fclose(file);
 }

@@ -18,4 +18,4 @@
 #define MODRM_REGFIELD(reg) reg >> 2
 #define MODRM_REGINRMFIELD(reg) reg >> 5
 
-void sprintasm_modrmmake(uint8_t register, asmlocation_t* target, int* szptr, sprint_bytebuff_t buff);
+void sprintasm_modrmmake(uint8_t register, asmlocation_t* target, int* szptr, sprint_bytebuff_t* buff);

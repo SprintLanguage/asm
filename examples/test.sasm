@@ -1,4 +1,1 @@
-mov64 rdx rsp
-mov64 rax rdx
-mov64 rdi rax
-mov64 rsp rdx
+move64 sp bp
