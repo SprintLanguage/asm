@@ -11,7 +11,7 @@
 extern uint8_t x86registers[];
 char* registernames[] = {"rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"};
 
-sprint_bytebuff_t sprintasm_parseinstruction(char* line) {
+void sprintasm_parseinstruction(char* line, sprint_bytebuff_t buff) {
     char* buffs = malloc(320);
     memset(buffs, 0, 320);
 
@@ -36,10 +36,11 @@ sprint_bytebuff_t sprintasm_parseinstruction(char* line) {
                 target = x86registers[i];
             }
 
-            asmlocation_t* t = sprintasm_locregister(target);
-            
+            asmlocation_t t = {0};
+            sprintasm_locregister(target, &t);
+
             int size = 0;
-            uint8_t* buff = sprintasm_modrmmake(source, t, &size);
+            sprintasm_modrmmake(source, &t, &size, buff);
         }
     }
 }
@@ -57,10 +58,16 @@ sprint_bytebuff_t sprintasm_parseinstructions(FILE* file) {
     char* line = malloc(32);
     int lindex = 0;
 
+    sprint_bytebuff_t* bytebuff = malloc(sizeof(sprint_bytebuff_t));
+    bytebuff->allocated = 128;
+    bytebuff->sz = 0;
+
+    bytebuff->buff = malloc(128);
+
     char c;
     while(c = *++buff) {
         if(c == '\0' || c == '\n') {
-            sprintasm_parseinstruction(line, out);
+            sprintasm_parseinstruction(line, *bytebuff);
             lindex = 0;
         }
         else {
@@ -70,6 +77,7 @@ sprint_bytebuff_t sprintasm_parseinstructions(FILE* file) {
  
  
     }
-    fclose(out);
     fclose(file);
+
+    return *bytebuff;
 }
