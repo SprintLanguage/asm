@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <sprintasm/x86/loc.h>
+#include <sprintasm/loc.h>
 
 #include <stdint.h>
 

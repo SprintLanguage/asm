@@ -1,4 +1,4 @@
-#include <sprintasm/x86/loc.h>
+#include <sprintasm/loc.h>
 #include <sprintasm/x86/modrm.h>
 #include <sprintasm/x86/reg.h>
 
