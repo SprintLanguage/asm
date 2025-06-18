@@ -45,9 +45,7 @@
 #define REGISTER_ESI 0x30
 #define REGISTER_EDI 0x38
 
-/**
- * Allows to convert an register for the "reg" field to a register for the r/m field when the "mode" == MODE_REGTOREG
- */
-#define REGISTER_REGFIELD_TO_RM(x) x << 3
+#define MODRM_REGFIELD(reg) reg >> 2
+#define MODRM_REGINRMFIELD(reg) reg >> 5
 
 uint8_t* sprintasm_modrmmake(uint8_t register, asmlocation_t* target, int* szptr);
