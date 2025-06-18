@@ -5,6 +5,7 @@
 #pragma once
 
 #include <sprintasm/loc.h>
+#include <sprintasm/buff.h>
 
 #include <stdint.h>
 
@@ -17,4 +18,4 @@
 #define MODRM_REGFIELD(reg) reg >> 2
 #define MODRM_REGINRMFIELD(reg) reg >> 5
 
-uint8_t* sprintasm_modrmmake(uint8_t register, asmlocation_t* target, int* szptr);
+void sprintasm_modrmmake(uint8_t register, asmlocation_t* target, int* szptr, sprint_bytebuff_t buff);
