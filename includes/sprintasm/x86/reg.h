@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 // 64-bit register variants (x86-64 processors only)
 #define REGISTER_RAX 0b000000000
 #define REGISTER_RCX 0b001000000
@@ -15,14 +17,14 @@
 #define REGISTER_RDI 0b111000000
 
 // 32-bit register variants (everywhere)
-#define REGISTER_EAX 0b000000000
-#define REGISTER_ECX 0b001000000
-#define REGISTER_EDX 0b010000000
-#define REGISTER_EBX 0b011000000
-#define REGISTER_ESP 0b100000000
-#define REGISTER_EBP 0b101000000
-#define REGISTER_ESI 0b110000000
-#define REGISTER_EDI 0b111000000
+#define REGISTER_EAX 0x00
+#define REGISTER_ECX 0x20
+#define REGISTER_EDX 0x40
+#define REGISTER_EBX 0x60
+#define REGISTER_ESP 0x80
+#define REGISTER_EBP 0xA0
+#define REGISTER_ESI 0xC0
+#define REGISTER_EDI 0xE0
 
 // 16-bit register variants (everywhere)
 #define REGISTER_AX 0b000000000

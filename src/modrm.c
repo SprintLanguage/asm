@@ -1,5 +1,6 @@
 #include <sprintasm/x86/loc.h>
 #include <sprintasm/x86/modrm.h>
+#include <sprintasm/x86/reg.h>
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,7 +13,7 @@ uint8_t* sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr) {
 
     if(target->type == REGISTER) {
         modrm |= MODE_REGTOREG;
-        modrm |= REGISTER_REGFIELD_TO_RM(target->bytes[0]);
+        modrm |= MODRM_REGINRMFIELD(target->bytes[0]);
     }
     else {
         modrm |= MODE_REGTOMEM;
@@ -22,7 +23,7 @@ uint8_t* sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr) {
             return NULL;
         }
 
-        modrm |= REGISTER_REGFIELD_TO_RM(target->bytes[0]);
+        modrm |= MODRM_REGINRMFIELD(target->bytes[0]);
     }
 
     if(target->type == DIRECT_ADDRESS) {
@@ -30,7 +31,7 @@ uint8_t* sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr) {
         *szptr = 5;
     }
 
-    modrm |= reg;
+    modrm |= MODRM_REGFIELD(reg);
 
     uint8_t* buff = malloc(*szptr);
     buff[0] = modrm;
