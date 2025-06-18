@@ -13,6 +13,6 @@ typedef struct sprintasm_locationt {
     uint8_t* bytes;
 } asmlocation_t;
 
-asmlocation_t* sprintasm_locregister(uint8_t register);
-asmlocation_t* sprintasm_locaddr(uint32_t addr);
-asmlocation_t* sprintasm_locregaddr(uint8_t register);
+void sprintasm_locregister(uint8_t register, asmlocation_t* loc);
+void sprintasm_locaddr(uint32_t addr, asmlocation_t* loc);
+void sprintasm_locregaddr(uint8_t register, asmlocation_t* loc);
