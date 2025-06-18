@@ -7,12 +7,12 @@
 #include <sys/resource.h>
 #endif
 
-long sprintbench_timeget() {
+double sprintbench_timeget() {
 #ifdef _WIN32
     LARGE_INTEGER t, f;
     QueryPerformanceCounter(&t);
     QueryPerformanceFrequency(&f);
-    return (double)t.QuadPart/(double)f.QuadPart;
+    return (double)t.QuadPart/(double)f.QuadPart * 1000000;
 #else
     struct timeval t;
     struct timezone tzp;
