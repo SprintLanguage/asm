@@ -1,0 +1,25 @@
+/**
+ * x86 registers
+ */
+
+#pragma once
+
+// 32-bit register variants (everywhere)
+#define REGISTER_EAX 0b000000000
+#define REGISTER_ECX 0b001000000
+#define REGISTER_EDX 0b010000000
+#define REGISTER_EBX 0b011000000
+#define REGISTER_ESP 0b100000000
+#define REGISTER_EBP 0b101000000
+#define REGISTER_ESI 0b110000000
+#define REGISTER_EDI 0b111000000
+
+// 64-bit register variants (x86-64 processors only)
+#define REGISTER_RAX 0b000000000
+#define REGISTER_RCX 0b001000000
+#define REGISTER_RDX 0b010000000
+#define REGISTER_RBX 0b011000000
+#define REGISTER_RSP 0b100000000
+#define REGISTER_RBP 0b101000000
+#define REGISTER_RSI 0b110000000
+#define REGISTER_RDI 0b111000000
