@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-uint8_t* sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr) {
+void sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr, sprint_bytebuff_t buff) {
     uint8_t modrm = 0x00;
 
     *szptr = 1;
@@ -33,14 +33,14 @@ uint8_t* sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr) {
 
     modrm |= MODRM_REGFIELD(reg);
 
-    uint8_t* buff = malloc(*szptr);
-    buff[0] = modrm;
+    buff.buff[buff.sz] = modrm;
+    ++buff.sz;
 
     if(target->type == DIRECT_ADDRESS) {
-        for(int i = 1; i < 5; ++i) {
-            buff[i] = target->bytes[i];
+        for(int i = 0; i < 4; ++i) {
+            buff.buff[buff.sz + i] = target->bytes[i];
         }
+
+        buff.sz += 4;
     }
-    
-    return buff;
 }
