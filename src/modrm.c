@@ -20,7 +20,7 @@ void sprintasm_modrmmake(uint8_t reg, asmlocation_t* target, int* szptr, sprint_
 
         if(target->bytes[0] == REGISTER_EBP) {
             printf("ERROR: Can't use the registry EBP whie using mode memory!\n");
-            return NULL;
+            return;
         }
 
         modrm |= MODRM_REGINRMFIELD(target->bytes[0]);

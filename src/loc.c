@@ -1,4 +1,5 @@
 #include <sprintasm/loc.h>
+#include <stdlib.h>
 
 void sprintasm_locregister(uint8_t reg, asmlocation_t* loc) {
     loc->type = REGISTER;
