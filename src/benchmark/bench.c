@@ -7,6 +7,7 @@
 #include <sys/resource.h>
 #endif
 
+
 double sprintbench_timeget() {
 #ifdef _WIN32
     LARGE_INTEGER t, f;
