@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <sprintasm/buff.h>
 
-uint8_t* sprintasm_parseinstruction(char* line);
-uint8_t* sprintasm_parseinstructions(FILE* file);
+sprint_bytebuff_t sprintasm_parseinstruction(char* line);
+sprint_bytebuff_t sprintasm_parseinstructions(FILE* file);
