@@ -1,0 +1,11 @@
+/**
+ * x86 REX prefix definitions
+ */
+
+#define REX_PREFIX_BASE 0x40
+
+// From start to end (index7 = end)
+#define REX_PREFIX_USE64BIT_OPERANDSZ 4
+#define REX_PREFIX_REGFIELD_EXTENSION 5
+#define REX_PREFIX_SIBINDEXFIELD_EXTENSION 6
+#define REX_PREFIX_RMFIELD_EXTENSION 7

@@ -3,13 +3,11 @@
 
 
 const char* registers[] = {
-    "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi",
-    "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
-    "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil"
+    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"
 };
 
-int main2() {
+int main() {
     printf("move64: %d\n", strhash("move64"));
     printf("move32: %d\n", strhash("move32"));
     printf("move16: %d\n", strhash("move16"));

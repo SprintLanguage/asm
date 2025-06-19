@@ -28,6 +28,31 @@ char* registernames[] = {"rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"}
 #define REG_SI 2386
 #define REG_DI 2029
 
+#define REG_R8 3704
+#define REG_R9 2653
+#define REG_R10 1222
+#define REG_R11 2671
+#define REG_R12 3652
+#define REG_R13 2760
+#define REG_R14 1793
+#define REG_R15 644
+
+uint8_t sprintasm_isregextended(uint8_t reg) {
+    switch(reg) {
+        case REGISTER_R8:
+        case REGISTER_R9:
+        case REGISTER_R10:
+        case REGISTER_R11:
+        case REGISTER_R12:
+        case REGISTER_R13:
+        case REGISTER_R14:
+        case REGISTER_R15:
+            return 0x01;    
+    }
+
+    return 0x00;
+}
+
 uint8_t sprintasm_findreg(char* str) {
     switch(strhash(str)) {
         case REG_AX:
@@ -53,6 +78,9 @@ uint8_t sprintasm_findreg(char* str) {
         
         case REG_DI:
             return REGISTER_DIL;    
+
+        case REG_R9:
+            return REGISTER_R9;    
     }
 }
 

@@ -16,6 +16,16 @@
 #define REGISTER_RSI 0xC0
 #define REGISTER_RDI 0xE0
 
+// 64-bit additional registers (must be using the REX prefix for it).
+#define REGISTER_R8 0x00
+#define REGISTER_R9 0x20
+#define REGISTER_R10 0x40
+#define REGISTER_R11 0x60
+#define REGISTER_R12 0x80
+#define REGISTER_R13 0xA0
+#define REGISTER_R14 0xC0
+#define REGISTER_R15 0xE0
+
 // 32-bit register variants (everywhere)
 #define REGISTER_EAX 0x00
 #define REGISTER_ECX 0x20
@@ -35,7 +45,6 @@
 #define REGISTER_BP 0xA0
 #define REGISTER_SI 0xC0
 #define REGISTER_DI 0xE0
-
 
 // 8-bit register variants (everywhere)
 #define REGISTER_AL 0x00
