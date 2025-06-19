@@ -1,7 +1,7 @@
 
 FLAGS = -Iincludes
 
-SRC = $(wildcard src/*.c)
+SRC = $(wildcard src/*.c src/**/*.c src/**/**/*.c)
 TESTS = $(wildcard tests/*.c)
 
 test: 
