@@ -75,18 +75,14 @@ void sprintasm_parseregister(unsigned int token, asm_register_t* reg) {
 }
 
 void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
-    char* buffs = malloc(320);
-    memset(buffs, 0, 320);
 
-    char* token = strtok(line, " \t\n");
-    int offset = 0;
-    while (token && offset < 3) {
-        strncpy(buffs + offset * 32, token, 31);
-        token = strtok(NULL, " \t\n");
-        offset++;
+    unsigned long instructionHash = 5381;    
+
+    char c;
+    while(c = *line++) {
+        if(c == '\0' || c == ' ') break;
+        strhash_append(&instructionHash, c);
     }
-
-    int instructionHash = strhash(buffs);
 
     switch(instructionHash) {
         case TOKEN_MOVE64:
@@ -96,11 +92,21 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
             asm_register_t source = {0};
             asm_register_t target = {0};
 
-            printf("First one: %s", buffs + 32);
-            sprintasm_parseregister(strhash(buffs + 32), &source);
+            unsigned long reg1Hash = 5381;
+            unsigned long reg2Hash = 5381;
 
-            printf("Second one: %s", buffs + 64);
-            sprintasm_parseregister(strhash(buffs + 64), &target);
+            char c;
+            while(c = *line++) {
+                if(c == '\0' || c == ' ' || c == '\n') break;
+                strhash_append(&reg1Hash, c);
+            }
+            while(c = *line++) {
+                if(c == '\0' || c == ' ') break;
+                strhash_append(&reg2Hash, c);
+            }
+
+            sprintasm_parseregister(reg1Hash, &source);
+            sprintasm_parseregister(reg2Hash, &target);
 
             if(source.type != target.type && source.type != BITS64 && target.type != BITS64 && source.type != REX_EXTENDED && target.type != REX_EXTENDED) {
                 printf("ERROR: The provided registers aren't of the same size! While this is technically correct, it isn't recommended for clarity!\n");
@@ -131,6 +137,8 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
             int size = 0;
             sprintasm_modrmmake(source.bit, &loc, &size, buff);
             break;
+        default:
+            printf("ERR: Unknown instruction hash: %d\n", instructionHash);    
     }
 
 }
@@ -171,6 +179,7 @@ sprint_bytebuff_t* sprintasm_parseinstructions(FILE* file) {
     }
 
     if(lindex > 0) {
+        line[lindex] = '\0';
         sprintasm_parseinstruction(line, bytebuff);
     }
 
