@@ -12,3 +12,10 @@ unsigned int strhash(char* str) {
 
     return hash;
 }
+
+/**
+ * Appends the given character to the given hash pointer.
+ */
+void strhash_append(unsigned int* hashptr, char c) {
+    *hashptr = ((*hashptr << 5) + *hashptr) + (unsigned char)c;
+}
