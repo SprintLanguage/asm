@@ -118,6 +118,16 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
                 buff->buff[buff->sz] = rex;
                 ++buff->sz;
             }
+
+            buff->buff[buff->sz] = MOVE_REGTO_RM;
+            ++buff->sz;
+
+            asmlocation_t loc = {0};
+            sprintasm_locregister(target.bit, &loc);
+
+            int size = 0;
+            sprintasm_modrmmake(source.bit, &loc, &size, buff);
+            break;
     }
 
 }
