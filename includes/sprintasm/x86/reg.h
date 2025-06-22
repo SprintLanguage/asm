@@ -55,3 +55,18 @@
 #define REGISTER_BPL 0xA0
 #define REGISTER_SIL 0xC0
 #define REGISTER_DIL 0xE0
+
+typedef enum sprintasm_regtype_t {
+
+    BITS64,
+    REX_EXTENDED,
+    BITS32,
+    BITS16,
+    BITS8
+
+} regtype_t;
+
+typedef struct sprintasm_register_t {
+    regtype_t type;
+    uint8_t bit;
+} asm_register_t;
