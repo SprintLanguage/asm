@@ -3,6 +3,7 @@
 #include <sprintasm/loc.h>
 #include <sprintasm/x86/reg.h>
 #include <sprintasm/x86/modrm.h>
+#include <sprintasm/x86/rex.h>
 
 #include <sprint/hash.h>
 
@@ -68,24 +69,20 @@ void sprintasm_parseregister(unsigned int token, asm_register_t* reg) {
             reg->bit = 0;
             reg->type = BITS64;
 
-            printf("ERR: You provided an inexistent register in your parameters, so no assembly for you");
+            printf("\nERR: You provided an inexistent register in your parameters, so no assembly for you (tokenHash: %d)\n", token);
             break;
     }
 }
 
 void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
-    char* buffs = malloc(320);
-    memset(buffs, 0, 320);
 
-    char* token = strtok(line, " \t\n");
-    int offset = 0;
-    while (token && offset < 3) {
-        strncpy(buffs + offset * 32, token, 31);
-        token = strtok(NULL, " \t\n");
-        offset++;
+    unsigned long instructionHash = 5381;    
+
+    char c;
+    while(c = *line++) {
+        if(c == '\0' || c == ' ') break;
+        strhash_append(&instructionHash, c);
     }
-
-    int instructionHash = strhash(buffs);
 
     switch(instructionHash) {
         case TOKEN_MOVE64:
@@ -95,8 +92,21 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
             asm_register_t source = {0};
             asm_register_t target = {0};
 
-            sprintasm_parseregister(strhash(buffs + 32), &source);
-            sprintasm_parseregister(strhash(buffs + 64), &target);
+            unsigned long reg1Hash = 5381;
+            unsigned long reg2Hash = 5381;
+
+            char c;
+            while(c = *line++) {
+                if(c == '\0' || c == ' ' || c == '\n') break;
+                strhash_append(&reg1Hash, c);
+            }
+            while(c = *line++) {
+                if(c == '\0' || c == ' ') break;
+                strhash_append(&reg2Hash, c);
+            }
+
+            sprintasm_parseregister(reg1Hash, &source);
+            sprintasm_parseregister(reg2Hash, &target);
 
             if(source.type != target.type && source.type != BITS64 && target.type != BITS64 && source.type != REX_EXTENDED && target.type != REX_EXTENDED) {
                 printf("ERROR: The provided registers aren't of the same size! While this is technically correct, it isn't recommended for clarity!\n");
@@ -108,10 +118,27 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
                 return;
             }
 
-            if(instructionHash == )
+            if(instructionHash == TOKEN_MOVE64) {
+                uint8_t rex = REX_PREFIX_BASE | (1 << REX_PREFIX_USE64BIT_OPERANDSZ);
 
-        
+                if(source.type == REX_EXTENDED) rex |= (1 << REX_PREFIX_REGFIELD_EXTENSION);
+                if(target.type == REX_EXTENDED) rex |= (1 << REX_PREFIX_RMFIELD_EXTENSION);
+            
+                buff->buff[buff->sz] = rex;
+                ++buff->sz;
+            }
 
+            buff->buff[buff->sz] = MOVE_REGTO_RM;
+            ++buff->sz;
+
+            asmlocation_t loc = {0};
+            sprintasm_locregister(target.bit, &loc);
+
+            int size = 0;
+            sprintasm_modrmmake(source.bit, &loc, &size, buff);
+            break;
+        default:
+            printf("ERR: Unknown instruction hash: %d\n", instructionHash);    
     }
 
 }
@@ -152,6 +179,7 @@ sprint_bytebuff_t* sprintasm_parseinstructions(FILE* file) {
     }
 
     if(lindex > 0) {
+        line[lindex] = '\0';
         sprintasm_parseinstruction(line, bytebuff);
     }
 
