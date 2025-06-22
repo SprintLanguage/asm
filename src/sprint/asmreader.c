@@ -3,6 +3,7 @@
 #include <sprintasm/loc.h>
 #include <sprintasm/x86/reg.h>
 #include <sprintasm/x86/modrm.h>
+#include <sprintasm/x86/rex.h>
 
 #include <sprint/hash.h>
 
@@ -108,10 +109,15 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
                 return;
             }
 
-            if(instructionHash == )
+            if(instructionHash == TOKEN_MOVE64) {
+                uint8_t rex = REX_PREFIX_BASE | (1 << REX_PREFIX_USE64BIT_OPERANDSZ);
 
-        
-
+                if(source.type == REX_EXTENDED) rex |= (1 << REX_PREFIX_REGFIELD_EXTENSION);
+                if(target.type == REX_EXTENDED) rex |= (1 << REX_PREFIX_RMFIELD_EXTENSION);
+            
+                buff->buff[buff->sz] = rex;
+                ++buff->sz;
+            }
     }
 
 }
