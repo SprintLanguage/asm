@@ -1,19 +1,34 @@
 #include <stdio.h>
 #include <sprint/hash.h>
+#include <string.h>
+#include <ctype.h>
 
 
 const char* registers[] = {
+    "move64", "move32", "move16", "move8",
+    "rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi",
+    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+    "eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
-    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"
+    "al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil"
 };
 
-int main() {
-    printf("move64: %d\n", strhash("move64"));
-    printf("move32: %d\n", strhash("move32"));
-    printf("move16: %d\n", strhash("move16"));
-    printf("move8: %d\n", strhash("move8"));
+char* upperCase(char str[256]) {
+    for(int i = 0; i < strlen(str); ++i) {
+        str[i] = toupper(str[i]);
+    }
 
-    for(int i = 0; i < 32; ++i) {
-        printf("%s: %d\n", registers[i], strhash(registers[i]));
+    return str;
+}
+
+int main() {
+    char buffer[256];
+
+    for(int i = 0; i < 44; ++i) {
+        strncpy(buffer, registers[i], sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+        unsigned int hash = strhash(buffer);
+        upperCase(buffer);
+        printf("#define TOKEN_%s %d\n", buffer, hash);
     }
 }

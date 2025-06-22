@@ -11,76 +11,65 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern uint8_t x86registers[];
-char* registernames[] = {"rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"};
+void sprintasm_parseregister(unsigned int token, asm_register_t* reg) {
+    switch(token) {
+        // 64-bit registers
+        case TOKEN_RAX: reg->bit = REGISTER_RAX; reg->type = BITS64; break;
+        case TOKEN_RCX: reg->bit = REGISTER_RCX; reg->type = BITS64; break;
+        case TOKEN_RDX: reg->bit = REGISTER_RDX; reg->type = BITS64; break;
+        case TOKEN_RBX: reg->bit = REGISTER_RBX; reg->type = BITS64; break;
+        case TOKEN_RSP: reg->bit = REGISTER_RSP; reg->type = BITS64; break;
+        case TOKEN_RBP: reg->bit = REGISTER_RBP; reg->type = BITS64; break;
+        case TOKEN_RSI: reg->bit = REGISTER_RSI; reg->type = BITS64; break;
+        case TOKEN_RDI: reg->bit = REGISTER_RDI; reg->type = BITS64; break;
 
-#define INS_MOVE64 3594
-#define INS_MOVE32 1194
-#define INS_MOVE16 427
-#define INS_MOVE8 1537
+        // 64-bit extended registers (REX)
+        case TOKEN_R8:  reg->bit = REGISTER_R8;  reg->type = REX_EXTENDED; break;
+        case TOKEN_R9:  reg->bit = REGISTER_R9;  reg->type = REX_EXTENDED; break;
+        case TOKEN_R10: reg->bit = REGISTER_R10; reg->type = REX_EXTENDED; break;
+        case TOKEN_R11: reg->bit = REGISTER_R11; reg->type = REX_EXTENDED; break;
+        case TOKEN_R12: reg->bit = REGISTER_R12; reg->type = REX_EXTENDED; break;
+        case TOKEN_R13: reg->bit = REGISTER_R13; reg->type = REX_EXTENDED; break;
+        case TOKEN_R14: reg->bit = REGISTER_R14; reg->type = REX_EXTENDED; break;
+        case TOKEN_R15: reg->bit = REGISTER_R15; reg->type = REX_EXTENDED; break;
 
-#define REG_AX 3840
-#define REG_CX 38
-#define REG_DX 1572
-#define REG_BX 2671
-#define REG_SP 521
-#define REG_BP 185
-#define REG_SI 2386
-#define REG_DI 2029
+        // 32-bit registers
+        case TOKEN_EAX: reg->bit = REGISTER_EAX; reg->type = BITS32; break;
+        case TOKEN_ECX: reg->bit = REGISTER_ECX; reg->type = BITS32; break;
+        case TOKEN_EDX: reg->bit = REGISTER_EDX; reg->type = BITS32; break;
+        case TOKEN_EBX: reg->bit = REGISTER_EBX; reg->type = BITS32; break;
+        case TOKEN_ESP: reg->bit = REGISTER_ESP; reg->type = BITS32; break;
+        case TOKEN_EBP: reg->bit = REGISTER_EBP; reg->type = BITS32; break;
+        case TOKEN_ESI: reg->bit = REGISTER_ESI; reg->type = BITS32; break;
+        case TOKEN_EDI: reg->bit = REGISTER_EDI; reg->type = BITS32; break;
 
-#define REG_R8 3704
-#define REG_R9 2653
-#define REG_R10 1222
-#define REG_R11 2671
-#define REG_R12 3652
-#define REG_R13 2760
-#define REG_R14 1793
-#define REG_R15 644
+        // 16-bit registers
+        case TOKEN_AX: reg->bit = REGISTER_AX; reg->type = BITS16; break;
+        case TOKEN_CX: reg->bit = REGISTER_CX; reg->type = BITS16; break;
+        case TOKEN_DX: reg->bit = REGISTER_DX; reg->type = BITS16; break;
+        case TOKEN_BX: reg->bit = REGISTER_BX; reg->type = BITS16; break;
+        case TOKEN_SP: reg->bit = REGISTER_SP; reg->type = BITS16; break;
+        case TOKEN_BP: reg->bit = REGISTER_BP; reg->type = BITS16; break;
+        case TOKEN_SI: reg->bit = REGISTER_SI; reg->type = BITS16; break;
+        case TOKEN_DI: reg->bit = REGISTER_DI; reg->type = BITS16; break;
 
-uint8_t sprintasm_isregextended(uint8_t reg) {
-    switch(reg) {
-        case REGISTER_R8:
-        case REGISTER_R9:
-        case REGISTER_R10:
-        case REGISTER_R11:
-        case REGISTER_R12:
-        case REGISTER_R13:
-        case REGISTER_R14:
-        case REGISTER_R15:
-            return 0x01;    
-    }
+        // 8-bit registers
+        case TOKEN_AL:  reg->bit = REGISTER_AL;  reg->type = BITS8; break;
+        case TOKEN_CL:  reg->bit = REGISTER_CL;  reg->type = BITS8; break;
+        case TOKEN_DL:  reg->bit = REGISTER_DL;  reg->type = BITS8; break;
+        case TOKEN_BL:  reg->bit = REGISTER_BL;  reg->type = BITS8; break;
+        case TOKEN_SPL: reg->bit = REGISTER_SPL; reg->type = BITS8; break;
+        case TOKEN_BPL: reg->bit = REGISTER_BPL; reg->type = BITS8; break;
+        case TOKEN_SIL: reg->bit = REGISTER_SIL; reg->type = BITS8; break;
+        case TOKEN_DIL: reg->bit = REGISTER_DIL; reg->type = BITS8; break;
 
-    return 0x00;
-}
+        default:
+            // Unknown token, set to zero/invalid
+            reg->bit = 0;
+            reg->type = BITS64;
 
-uint8_t sprintasm_findreg(char* str) {
-    switch(strhash(str)) {
-        case REG_AX:
-            return REGISTER_AL;
-
-        case REG_CX:
-            return REGISTER_CL;  
-        
-        case REG_BX:
-            return REGISTER_BL;
-         
-        case REG_DX:
-            return REGISTER_DL;
-
-        case REG_SP:
-            return REGISTER_SPL;
-         
-        case REG_BP:
-            return REGISTER_BPL;
-
-        case REG_SI:
-            return REGISTER_SIL;
-        
-        case REG_DI:
-            return REGISTER_DIL;    
-
-        case REG_R9:
-            return REGISTER_R9;    
+            printf("ERR: You provided an inexistent register in your parameters, so no assembly for you");
+            break;
     }
 }
 
@@ -99,31 +88,32 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
     int instructionHash = strhash(buffs);
 
     switch(instructionHash) {
-        case INS_MOVE64:
-        case INS_MOVE32:
-        case INS_MOVE16:
-        case INS_MOVE8:
-            if(instructionHash == INS_MOVE64 || instructionHash == INS_MOVE16) {
-                buff->buff[buff->sz] = (instructionHash == INS_MOVE64) ? PREFIX_64BITS : PREFIX_16BITS;
-                +buff->sz;
+        case TOKEN_MOVE64:
+        case TOKEN_MOVE32:
+        case TOKEN_MOVE16:
+        case TOKEN_MOVE8:        
+            asm_register_t source = {0};
+            asm_register_t target = {0};
+
+            sprintasm_parseregister(strhash(buffs + 32), &source);
+            sprintasm_parseregister(strhash(buffs + 64), &target);
+
+            if(source.type != target.type && source.type != BITS64 && target.type != BITS64 && source.type != REX_EXTENDED && target.type != REX_EXTENDED) {
+                printf("ERROR: The provided registers aren't of the same size! While this is technically correct, it isn't recommended for clarity!\n");
+                return;
             }
 
-            buff->buff[buff->sz] = MOVE_REGTO_RM;
-            ++buff->sz;
+            if((instructionHash == TOKEN_MOVE8 && source.type != BITS8) || (instructionHash == TOKEN_MOVE16 && source.type != BITS16) || (instructionHash == TOKEN_MOVE32 && source.type != BITS32)) {
+                printf("ERROR: Instruction mismatch! Tried using a sized instruction for a differently sized register!");
+                return;
+            }
 
-            uint8_t reg = sprintasm_findreg(buffs + 32);
-            uint8_t target = sprintasm_findreg(buffs + 64);
+            if(instructionHash == )
 
-            asmlocation_t loc = {0};
-            sprintasm_locregister(target, &loc);
+        
 
-            int size = 0;
-            sprintasm_modrmmake(reg, &loc, &size, buff);
-            break;
-         
-        default:
-            printf("%d\n", instructionHash);  
     }
+
 }
 
 sprint_bytebuff_t* sprintasm_parseinstructions(FILE* file) {

@@ -6,7 +6,9 @@
 
 #include <stdint.h>
 #include <stdio.h>
+
 #include <sprintasm/buff.h>
+#include <sprintasm/x86/reg.h>
 
 #define TOKEN_MOVE64 238836422
 #define TOKEN_MOVE32 238836321
@@ -58,6 +60,7 @@
 #define TOKEN_SIL 193505805
 #define TOKEN_DIL 193489470
 
+void sprintasm_parseregister(unsigned int token, asm_register_t* reg);
 
 void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff);
 sprint_bytebuff_t* sprintasm_parseinstructions(FILE* file);
