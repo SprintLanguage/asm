@@ -69,7 +69,7 @@ void sprintasm_parseregister(unsigned int token, asm_register_t* reg) {
             reg->bit = 0;
             reg->type = BITS64;
 
-            printf("ERR: You provided an inexistent register in your parameters, so no assembly for you");
+            printf("\nERR: You provided an inexistent register in your parameters, so no assembly for you (tokenHash: %d)\n", token);
             break;
     }
 }
@@ -96,7 +96,10 @@ void sprintasm_parseinstruction(char* line, sprint_bytebuff_t* buff) {
             asm_register_t source = {0};
             asm_register_t target = {0};
 
+            printf("First one: %s", buffs + 32);
             sprintasm_parseregister(strhash(buffs + 32), &source);
+
+            printf("Second one: %s", buffs + 64);
             sprintasm_parseregister(strhash(buffs + 64), &target);
 
             if(source.type != target.type && source.type != BITS64 && target.type != BITS64 && source.type != REX_EXTENDED && target.type != REX_EXTENDED) {
